@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Forms</title>
+</head>
+<body>
+    <table border="1px">
+        <tr>
+            <td>Form id</td>
+            <td>Form title</td>
+            <td>Form url</td>
+            <td>Form Data</td>
+            <td>Google Sheets Enabled</td>
+            <td>Google Sheets Link</td>
+        </tr>
+
+    {% for form in forms_data %}
+        <tr>
+            <td>{{form.form_id}}</td>
+            <td>{{form.form_title}}</td>
+            <td><a href="{{form.url}}">{{form.url}}</a></td>
+
+            <td><a href="/show_data/{{form.form_id}}">Form Data</a></td>
+
+            {% if form.sheets == 1 %}
+            <td>sheets are enabled</td>
+            {% else %}
+            <td><a href="#" data-form_id ="{{form.form_id}}" onclick="enablesheets(event)">Enable Google Sheets</a></td>
+            {% endif %}
+
+            {% if form.sheets_url == 'not_available' %}
+            <td>Sheet is not available</td>
+            {% else %}
+            <td><a href="{{form.sheets_url}}">{{form.sheets_url}}</a></td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+    </table>
+    <input type="hidden" id="id" data-id="{{client_id}}">
+
+    <button onclick="gotocreateforms()">Create Forms</button><br>
+    <a href="/">Home</a>
+</body>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+<script>
+    const enablesheets = (event)=>{
+        var client_id = document.querySelector("#id").dataset.id,
+        redirect_uri = "http%3A//localhost:8080/redir",
+        scope = "https%3A//www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.email ",
+    
+        url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&response_type=code&redirect_uri=${redirect_uri}&client_id=${client_id}&access_type=offline`
+        let params = `scrollbars=no,resizable=no,status=no,location=no,toolbar=no,menubar=no,
+        width=600,height=600,left=500,top=100`
+        var myWindow = window.open(url, 'test',params)
+        //if(myWindow.document.innerHtml==0){
+        //    myWindow.close()
+        //}
+
+        var timer = setInterval(function() {   
+            if(myWindow.closed) {  
+                var form_id = event.srcElement.dataset.form_id
+                data = {
+                    "form_id" : form_id
+                }
+
+                $.ajax({
+                    type: 'post',
+                    url : "/create_sheet",
+                    data : JSON.stringify(data),
+                    contentType: 'application/json',
+                    success(data){
+                        if(data == 'done'){
+                            location.reload()
+                        }
+                    }
+                })
+                clearInterval(timer);
+            }  
+        }, 500);
+    
+
+    }
+
+    const gotocreateforms = ()=>{
+        window.location.href= '/create-forms'
+    }
+</script>
+</html>
+

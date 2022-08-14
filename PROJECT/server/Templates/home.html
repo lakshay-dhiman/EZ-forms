@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+</head>
+<body>
+    <button onclick="google_prompt()">Mujhe Dabao</button>
+</body>
+
+
+<script>
+    const google_prompt = ()=>{
+        const client_id = "412298736055-ecpugrd7nrt2blnn9r4p8f6e4r8vhual.apps.googleusercontent.com",
+        redirect_uri = "http%3A//localhost:8081/redir",
+        scope = "https%3A//www.googleapis.com/auth/drive https://www.googleapis.com/auth/userinfo.email ",
+
+        url = `https://accounts.google.com/o/oauth2/v2/auth?scope=${scope}&response_type=code&redirect_uri=${redirect_uri}&client_id=${client_id}&access_type=offline`
+        window.location.href = url 
+    }
+</script>
+</html>

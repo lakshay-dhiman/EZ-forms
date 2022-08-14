@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Data</title>
+</head>
+<body>
+    <h1>{{form_title}}</h1>
+    <table border="1px">
+        {% if responses !=[] %}
+        <tr>
+            {% for head in responses[0].keys() %}
+            <td>{{head}}</td>
+            {% endfor %}    
+        </tr>
+        {% for row in responses %}
+            <tr>
+                {% for cell in row.values()%}
+                {% if cell is iterable and (cell is not string and var is not mapping)%}
+                <td>
+                {% for val in cell%}
+                    <li>{{val}}</li>
+                {% endfor%} 
+                </td>
+                {% else %}
+                <td>{{cell}}</td>
+                {% endif %}
+                
+                {% endfor %}
+            </tr>
+        {% endfor%}
+        {% else %}
+        <h1>No data yet</h1>
+        {% endif %}
+
+    </table>
+    <a href="/">Home</a>
+</body>
+</html>
